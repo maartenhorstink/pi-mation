@@ -1,18 +1,20 @@
-#!/usr/bin/env python
+	#!/usr/bin/env python
 
 # Pi-Mation v0.5
 # Stop motion animation for the Raspberry Pi and camera module
 # Russell Barnes - 12 Nov 2013 for Linux User magazine issue 134 
 # www.linuxuser.co.uk
 
-import pygame, picamera, os, sys
+import pygame, os, sys
+import pygame.camera
 
 # global variables
 pics_taken = 0
 current_alpha, next_alpha = 128, 255
+enable_live_preview = False
 
 # set your desired fps (~5 for beginners, 10+ for advanced users)
-fps = 5
+fps = 10
 
 # Initialise Pygame, start screen and camera
 pygame.init()
@@ -25,15 +27,21 @@ screen = pygame.display.set_mode([width, height])
 pygame.display.toggle_fullscreen()
 pygame.mouse.set_visible = False
 play_clock = pygame.time.Clock()
-camera = picamera.PiCamera()
-camera.resolution = (width, height)
+# camera = picamera.PiCamera()
+# camera.resolution = (width, height)
+
+pygame.camera.init()
+camera = pygame.camera.Camera(pygame.camera.list_cameras()[0], (width, height))
+camera.start()
 
 def take_pic():
     """Grabs an image and load it for the alpha preview and 
     appends the name to the animation preview list"""
     global pics_taken, prev_pic
     pics_taken += 1
-    camera.capture(os.path.join('pics', 'image_' + str(pics_taken) + '.jpg'), use_video_port = True)
+    #camera.capture(os.path.join('pics', 'image_' + str(pics_taken) + '.jpg'), use_video_port = True)
+    img = camera.get_image()
+    pygame.image.save(img, os.path.join('pics', 'image_' + str(pics_taken) + '.jpg'))
     prev_pic = pygame.image.load(os.path.join('pics', 'image_' + str(pics_taken) + '.jpg'))
 
 def delete_pic():
@@ -48,27 +56,32 @@ def delete_pic():
 def animate():
     """Do a quick live preview animation of 
     all current pictures taken"""
-    camera.stop_preview()
+    #camera.stop_preview()
+    enable_live_preview = True
     for pic in range(1, pics_taken):
         anim = pygame.image.load(os.path.join('pics', 'image_' + str(pic) + '.jpg'))
         screen.blit(anim, (0, 0))
         play_clock.tick(fps)
         pygame.display.flip()
     play_clock.tick(fps)
-    camera.start_preview()
+    #camera.start_preview()
+    enable_live_preview = True
 
 def update_display():
     """Blit the screen (behind the camera preview) with the last picture taken"""
     screen.fill((0,0,0))
     if pics_taken > 0:
-        screen.blit(prev_pic, (0, 0))
+        img = camera.get_image()
+        screen.blit(img, (0, 0))
+        #screen.blit(prev_pic, (0, 0))
     play_clock.tick(30)
     pygame.display.flip()
 
 def make_movie():
     """Quit out of the application 
     and create a movie with your pics"""
-    camera.stop_preview()
+    #camera.stop_preview()
+    enable_live_preview = False
     pygame.quit()
     print "\nQuitting Pi-Mation to transcode your video.\nWarning: this will take a long time!"
     print "\nOnce complete, write 'omxplayer video.mp4' in the terminal to play your video.\n"
@@ -78,13 +91,15 @@ def make_movie():
 def change_alpha():
     """Toggle's camera preview optimacy between half and full."""
     global current_alpha, next_alpha
-    camera.stop_preview()
+    #camera.stop_preview()
+    enable_live_preview = False
     current_alpha, next_alpha = next_alpha, current_alpha
     return next_alpha
     
 def quit_app():
     """Cleanly closes the camera and the application"""
-    camera.close()
+    #camera.close()
+    pygame.camera.quit()
     pygame.quit()
     print "You've taken", pics_taken, " pictures. Don't forget to back them up (or they'll be overwritten next time)"
     sys.exit(0)
@@ -99,10 +114,18 @@ def intro_screen():
                 if event.key == pygame.K_ESCAPE:
                     quit_app()
                 elif event.key == pygame.K_F1:
-                    camera.start_preview()
+                    #camera.start_preview()
+                    enable_live_preview = True
                     intro = False
         screen.blit(start_pic_fix, (0, 0))
         pygame.display.update()
+
+def show_live_camera():
+    if enable_live_preview:
+        screen.fill((0,0,0))
+        screen = camera.get_image(screen)
+        pygame.display.blit(screen, (0,0))
+        pygame.display.flip()
 
 def main():
     """Begins on the help screen before the main application loop starts"""
@@ -120,14 +143,17 @@ def main():
                     make_movie()
                 elif event.key == pygame.K_TAB:
                     camera.preview_alpha = change_alpha()
-                    camera.start_preview()
+                    #camera.start_preview()
+                    enable_live_preview = True
                 elif event.key == pygame.K_F1:
-                    camera.stop_preview()
+                    #camera.stop_preview()
+                    enable_live_preview = False
                     intro_screen()
                 elif event.key == pygame.K_p:
                     if pics_taken > 1:
                         animate()
         update_display()
+        show_live_camera()
 
 if __name__ == '__main__':
     main()
