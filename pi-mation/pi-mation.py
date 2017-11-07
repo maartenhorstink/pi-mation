@@ -38,15 +38,15 @@ def take_pic():
     """Grabs an image and load it for the alpha preview and 
     appends the name to the animation preview list"""
     global pics_taken, prev_pic
-    pics_taken += 1
     #camera.capture(os.path.join('pics', 'image_' + str(pics_taken) + '.jpg'), use_video_port = True)
     img = camera.get_image()
     pygame.image.save(img, os.path.join('pics', 'image_' + str(pics_taken) + '.jpg'))
     prev_pic = pygame.image.load(os.path.join('pics', 'image_' + str(pics_taken) + '.jpg'))
-	# now flash the screen:
+    pics_taken += 1	
+    # now flash the screen:
     screen.fill((255,255,255))
     pygame.display.update()
-    time.sleep(0.1)
+    time.sleep(0.02)
 
 def delete_pic():
     """Doesn't actually delete the last picture, but the preview will 
@@ -62,6 +62,7 @@ def animate():
     all current pictures taken"""
     for pic in range(1, pics_taken):
         anim = pygame.image.load(os.path.join('pics', 'image_' + str(pic) + '.jpg'))
+        anim = pygame.transform.scale(anim, (width, height))        
         screen.blit(anim, (0, 0))
         play_clock.tick(fps)
         pygame.display.flip()
@@ -71,9 +72,11 @@ def update_display():
     """Blit the screen (behind the camera preview) with the last picture taken"""
     screen.fill((0,0,0))
     cam_img = camera.get_image()
+    cam_img = pygame.transform.scale(cam_img, (width, height))
     screen.blit(cam_img, (0, 0))
     if pics_taken > 0:
-        surface.blit(prev_pic, (0, 0))
+        scaled_pic = pygame.transform.scale(prev_pic, (width, height))        
+        surface.blit(scaled_pic, (0, 0))
         surface.set_alpha(current_alpha)        
         screen.blit(surface, (0,0))
 
