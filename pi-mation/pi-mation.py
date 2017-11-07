@@ -120,10 +120,17 @@ def intro_screen():
         screen.blit(start_pic_fix, (0, 0))
         pygame.display.update()
 
+def new_project():
+    """starts new project by resetting pics_taken to zero"""
+    global pics_taken
+    pics_taken = 0
+    
+    
+
 
 def main():
     """Begins on the help screen before the main application loop starts"""
-    intro_screen()
+    #intro_screen()
     while True:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
@@ -142,6 +149,8 @@ def main():
                 elif event.key == pygame.K_p:
                     if pics_taken > 1:
                         animate()
+                elif event.key == pygame.K_n:
+                    new_project()
         update_display()
 
 if __name__ == '__main__':
