@@ -5,7 +5,7 @@
 # Russell Barnes - 12 Nov 2013 for Linux User magazine issue 134 
 # www.linuxuser.co.uk
 
-import pygame, os, sys
+import pygame, os, sys, time
 import pygame.camera
 
 # global variables
@@ -43,6 +43,10 @@ def take_pic():
     img = camera.get_image()
     pygame.image.save(img, os.path.join('pics', 'image_' + str(pics_taken) + '.jpg'))
     prev_pic = pygame.image.load(os.path.join('pics', 'image_' + str(pics_taken) + '.jpg'))
+	# now flash the screen:
+    screen.fill((255,255,255))
+    pygame.display.update()
+    time.sleep(0.1)
 
 def delete_pic():
     """Doesn't actually delete the last picture, but the preview will 
