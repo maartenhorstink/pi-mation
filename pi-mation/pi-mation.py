@@ -134,7 +134,7 @@ def main():
     while True:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-		print "Key down: " event.key
+		print "Key down: ", event.key
                 if event.key == pygame.K_ESCAPE:
                     quit_app()
                 elif event.key == pygame.K_SPACE:
