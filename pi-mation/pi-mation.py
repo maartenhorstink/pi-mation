@@ -18,13 +18,13 @@ fps = 10
 
 # Initialise Pygame, start screen and camera
 pygame.init()
-joysticks = [pygame.joystick.Joystick(i) for i in
-range(pygame.joystick.get_count())]
+joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
 for joy in joysticks:
     joy.init()
 
 res = pygame.display.list_modes() # return the best resolution for your monitor
-width, height = res[0] # Having trouble getting the right resolution? Manually set with: 'width, height = 1650, 1050' (where the numbers match your monitor)
+width, height = res[0] 
+# Having trouble getting the right resolution? Manually set with: 'width, height = 1650, 1050' (where the numbers match your monitor)
 #width, height = [640, 480]
 print "Reported resolution is:", width, "x", height
 start_pic = pygame.image.load(os.path.join('data', 'start_screen.jpg'))
