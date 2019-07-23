@@ -1,4 +1,4 @@
-	#!/usr/bin/env python
+#!/usr/bin/env python
 
 # Pi-Mation v0.5
 # Stop motion animation for the Raspberry Pi and camera module
