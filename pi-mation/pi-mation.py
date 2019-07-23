@@ -95,8 +95,7 @@ def make_movie():
     and create a movie with your pics"""
     pygame.quit()
     print "\nQuitting Pi-Mation to transcode your video.\nWarning: this will take a long time!"
-    print "\nOnce complete, write 'omxplayer video.mp4' in the terminal
-to play your video.\n"
+    print "\nOnce complete, write 'omxplayer video.mp4' in the terminal to play your video.\n"
     os.system("avconv -r " + str(fps) + " -i " + str((os.path.join('pics', 'image_%d.jpg'))) + " -vcodec libx264 video.mp4")
     sys.exit(0)
 
