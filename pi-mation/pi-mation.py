@@ -23,11 +23,8 @@ range(pygame.joystick.get_count())]
 for joy in joysticks:
     joy.init()
 
-res = pygame.display.list_modes() # return the best resolution for your
-monitor
-width, height = res[0] # Having trouble getting the right resolution?
-Manually set with: 'width, height = 1650, 1050' (where the numbers match
-your monitor)
+res = pygame.display.list_modes() # return the best resolution for your monitor
+width, height = res[0] # Having trouble getting the right resolution? Manually set with: 'width, height = 1650, 1050' (where the numbers match your monitor)
 #width, height = [640, 480]
 print "Reported resolution is:", width, "x", height
 start_pic = pygame.image.load(os.path.join('data', 'start_screen.jpg'))
@@ -39,16 +36,14 @@ play_clock = pygame.time.Clock()
 
 surface = pygame.Surface((width, height)).convert()
 pygame.camera.init()
-camera = pygame.camera.Camera(pygame.camera.list_cameras()[0], (width,
-height))
+camera = pygame.camera.Camera(pygame.camera.list_cameras()[0], (width,height))
 camera.start()
 
 def take_pic():
     """Grabs an image and load it for the alpha preview and
     appends the name to the animation preview list"""
     global pics_taken, prev_pic
-    #camera.capture(os.path.join('pics', 'image_' + str(pics_taken) +
-'.jpg'), use_video_port = True)
+    #camera.capture(os.path.join('pics', 'image_' + str(pics_taken) +'.jpg'), use_video_port = True)
     img = camera.get_image()
     pygame.image.save(img, os.path.join('pics', 'image_' +
 str(pics_taken) + '.jpg'))
@@ -62,21 +57,18 @@ str(pics_taken) + '.jpg'))
 
 def delete_pic():
     """Doesn't actually delete the last picture, but the preview will
-    update and it will be successfully overwritten the next time you
-take a shot"""
+    update and it will be successfully overwritten the next time you take a shot"""
     global pics_taken, prev_pic
     if pics_taken > 0:
         pics_taken -= 1
     if pics_taken >= 1:
-        prev_pic = pygame.image.load(os.path.join('pics', 'image_' +
-str(pics_taken) + '.jpg'))
+        prev_pic = pygame.image.load(os.path.join('pics', 'image_' + str(pics_taken) + '.jpg'))
 
 def animate():
     """Do a quick live preview animation of
     all current pictures taken"""
     for pic in range(1, pics_taken):
-        anim = pygame.image.load(os.path.join('pics', 'image_' +
-str(pic) + '.jpg'))
+        anim = pygame.image.load(os.path.join('pics', 'image_' + str(pic) + '.jpg'))
         anim = pygame.transform.scale(anim, (width, height))
         screen.blit(anim, (0, 0))
         play_clock.tick(fps)
@@ -84,8 +76,7 @@ str(pic) + '.jpg'))
     play_clock.tick(fps)
 
 def update_display():
-    """Blit the screen (behind the camera preview) with the last picture
-taken"""
+    """Blit the screen (behind the camera preview) with the last picture taken"""
     screen.fill((0,0,0))
     cam_img = camera.get_image()
     cam_img = pygame.transform.scale(cam_img, (width, height))
@@ -103,12 +94,10 @@ def make_movie():
     """Quit out of the application
     and create a movie with your pics"""
     pygame.quit()
-    print "\nQuitting Pi-Mation to transcode your video.\nWarning: this
-will take a long time!"
+    print "\nQuitting Pi-Mation to transcode your video.\nWarning: this will take a long time!"
     print "\nOnce complete, write 'omxplayer video.mp4' in the terminal
 to play your video.\n"
-    os.system("avconv -r " + str(fps) + " -i " +
-str((os.path.join('pics', 'image_%d.jpg'))) + " -vcodec libx264 video.mp4")
+    os.system("avconv -r " + str(fps) + " -i " + str((os.path.join('pics', 'image_%d.jpg'))) + " -vcodec libx264 video.mp4")
     sys.exit(0)
 
 def change_alpha():
@@ -122,13 +111,11 @@ def quit_app():
     """Cleanly closes the camera and the application"""
     pygame.camera.quit()
     pygame.quit()
-    print "You've taken", pics_taken, " pictures. Don't forget to back
-them up (or they'll be overwritten next time)"
+    print "You've taken", pics_taken, " pictures. Don't forget to back them up (or they'll be overwritten next time)"
     sys.exit(0)
 
 def intro_screen():
-    """Application starts on the help screen. User can exit
-    or start Pi-Mation proper from here"""
+    """Application starts on the help screen. User can exit or start Pi-Mation proper from here"""
     intro = True
     while intro:
         for event in pygame.event.get():
