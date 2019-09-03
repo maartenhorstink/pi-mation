@@ -31,7 +31,7 @@ start_pic = pygame.image.load(os.path.join('data', 'start_screen.jpg'))
 start_pic_fix = pygame.transform.scale(start_pic, (width, height))
 screen = pygame.display.set_mode([width, height])
 pygame.display.toggle_fullscreen()
-pygame.mouse.set_visible = False
+pygame.mouse.set_visible(False)
 play_clock = pygame.time.Clock()
 
 surface = pygame.Surface((width, height)).convert()
